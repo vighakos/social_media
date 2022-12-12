@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="hu">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regisztráció</title>
+    <link rel="stylesheet" href="/public/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/public/assets/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h3 class="mt-3">Regisztráció az oldalra</h3>
+        <hr>
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com" ng-model="user.name">
+            <label for="floatingInput">Név <em>*</em></label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com" ng-model="user.address">
+            <label for="floatingInput">Szállítási cím</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" ng-model="user.email">
+            <label for="floatingInput">E-mail cím <em>*</em></label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com" ng-model="user.phone">
+            <label for="floatingInput">Telefonszám</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" ng-model="user.pass1">
+            <label for="floatingPassword">Jelszó <em>*</em></label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" ng-model="user.pass2">
+            <label for="floatingPassword">Jelszó megerősítése <em>*</em></label>
+        </div>
+
+        <p class="mb-3 text-muted">A <em>*</em>-al jelölt adatok megadása kötelező!</p>
+
+        <button class="btn btn-primary mb-3" ng-click="registration()">Regisztráció véglegesítése</button>
+    </div>
+    <script src="/public/assets/js/bootstrap.min.js"></script>
+    <script src="/public/assets/js/moment.min.js"></script>
+    <script src="/public/assets/js/app.js"></script>
+</body>
+
+</html>
