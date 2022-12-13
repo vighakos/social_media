@@ -4,6 +4,7 @@ const express = require('express'),
     moment = require('moment'),
     cors = require('cors'),
     multer = require('multer'),
+    sha1 = require('sha1'),
     port = process.env.PORT,
     token = process.env.TOKEN;
 
@@ -20,6 +21,23 @@ server.use(cors());
 server.use(express.urlencoded({ extended: true }));
 server.use(express.json());
 
+// LOGINCHECK
+server.post('/login', tokencheck(), (req, res) => {
+    var table = req.body.table;
+    var email = req.body.email;
+    var passwd = req.body.passwd;
+
+    pool.query(`SELECT * FROM ${table} WHERE email=? AND password=?`, [email, sha1(passwd)], (err, results) => {
+        if (err) {
+            log(req.socket.remoteAddress, err);
+            res.status(500).send(err);
+        }
+
+        log(req.socket.remoteAddress, `${results.length} records sent form ${table} table (logincheck).`);
+        res.status(200).send(results);
+    })
+})
+
 // GET ALL RECORDS
 server.get('/:table', tokencheck(), (req, res) => {
     let table = req.params.table
@@ -29,8 +47,9 @@ server.get('/:table', tokencheck(), (req, res) => {
             log('ERROR', err)
             res.status(500).send(err)
         }
-        res.status(200).send(results)
+        
         log('SUCCESS', `${results.length} records sent from ${table}`)
+        res.status(200).send(results)
     })
 })
 
@@ -44,8 +63,104 @@ server.get('/:table/:id', tokencheck(), (req, res) => {
             log('ERROR', err)
             res.status(500).send(err)
         }
-        res.status(200).send(results)
+
         log('SUCCESS', `${results.length} records sent from ${table}`)
+        res.status(200).send(results)
+    })
+})
+
+// GET RECORDS BY FIELD
+server.get('/:table/:field/:value', tokencheck(), (req, res) => {
+    var table = req.params.table
+    var field = req.params.field
+    var value = req.params.value
+    pool.query(`SELECT * FROM ${table} WHERE ${field}='${value}'`, (err, results) => {
+        if (err) {
+            log(req.socket.remoteAddress, err)
+            res.status(500).send(err)
+        }
+        
+        log(req.socket.remoteAddress, `${results.length} records sent form ${table} table.`);
+        res.status(200).send(results);
+    })
+})
+
+// INSERT RECORD
+server.post('/:table', tokencheck(), (req, res) => {
+    var table = req.params.table;
+    var records = req.body;
+    var str = 'null';
+    var str2 = 'ID';
+
+    var fields = Object.keys(records);
+    var values = Object.values(records);
+
+    values.forEach(value => { str += `, '${value}'` })
+    fields.forEach(field => { str2 += `, ${field}` }) 
+
+    pool.query(`INSERT INTO ${table} (${str2}) VALUES(${str})`, (err, results) => {
+        if (err) {
+            log(req.socket.remoteAddress, err);
+            res.status(500).send(err);
+        }
+        log(req.socket.remoteAddress, `${results.affectedRows} record inserted to ${table} table.`);
+        res.status(200).send(results);
+    })
+})
+
+// UPDATE RECORD
+server.patch('/:table/:id', tokencheck(), (req, res) => {
+    var table = req.params.table;
+    var id = req.params.id;
+    var records = req.body;
+    var str = '';
+
+    var fields = Object.keys(records);
+    var values = Object.values(records);
+
+    for (let i = 0; i < fields.length; i++) {
+        str += `${fields[i]}='${values[i]}'`
+        if (i != fields.length - 1) str += ","
+    }
+
+    pool.query(`UPDATE ${table} SET ${str} WHERE ID=${id}`, (err, results) => {
+        if (err) {
+            log(req.socket.remoteAddress, err);
+            res.status(500).send(err);
+        }
+        log(req.socket.remoteAddress, `${results.affectedRows} record updated in ${table} table.`);
+        res.status(200).send(results);
+    })
+})
+
+// DELETE ONE RECORD
+server.delete('/:table/:id', tokencheck(), (req, res) => {
+    var table = req.params.table;
+    var id = req.params.id;
+
+    pool.query(`DELETE FROM ${table} WHERE ID=${id}`, (err, results) => {
+        if (err) {
+            log(req.socket.remoteAddress, err);
+            res.status(500).send(err);
+        }
+        log(req.socket.remoteAddress, `${results.affectedRows} record deleted form ${table} table.`);
+        res.status(200).send(results);
+    })
+})
+
+// DELETE ALL RECORDS WITH VALUE
+server.delete('/:table/:field/:value', tokencheck(), (req, res) => {
+    var table = req.params.table;
+    var field = req.params.field;
+    var value = req.params.value;
+
+    pool.query(`DELETE FROM ${table} WHERE ${field}=${value}`, (err, results) => {
+        if (err) {
+            log(req.socket.remoteAddress, err);
+            res.status(500).send(err);
+        }
+        log(req.socket.remoteAddress, `${results.affectedRows} records deleted form ${table} table.`);
+        res.status(200).send(results);
     })
 })
 
