@@ -1,18 +1,23 @@
-let app = new angular.module('socialMediaApp', ['ngRoute']);
+let app = new angular.module('socmedApp', ['ngRoute'])
 
 app.run(function($rootScope, $locale, DB) {
-
-    $locale.NUMBER_FORMATS.GROUP_SEP = ".";
-    $locale.NUMBER_FORMATS.DECIMAL_SEP = ",";
-
     $rootScope.settings = {};
-    $rootScope.loggedUser = {};
-    $rootScope.settings.appTitle = 'RFG-HJK Social Media';
+    $rootScope.settings.appTitle = 'Social Media App';
     $rootScope.settings.company = 'Bajai SZC Türr István Technikum';
-    $rootScope.settings.author = '2/14.szft : RFG-HJK csapata';
+    $rootScope.settings.author = 'Vigh Ákos, Kerekes István, Baranyi Dániel';
+    $rootScope.loggedUser = {};
+
     $rootScope.penznem = 'Ft';
     $rootScope.decimals = 0;
-    $rootScope.exch = 1;
-    $rootScope.loggedUser = angular.fromJson(sessionStorage.getItem('socialMediaApp'));
 
-});
+    $rootScope.loggedUser = angular.fromJson(sessionStorage.getItem('socmedApp'));
+})
+
+app.config(function($routeProvider) {
+    $routeProvider
+    // minden usernek
+        .when('/', {
+        templateUrl: 'views/posts.html',
+        controller: 'postCtrl'
+    })
+})
