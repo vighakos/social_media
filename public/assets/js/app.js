@@ -15,9 +15,9 @@ app.run(function($rootScope, $locale, DB) {
 
 app.config(function($routeProvider) {
     $routeProvider
-        // minden usernek
+    // minden usernek
         .when('/', {
-            templateUrl: 'views/posts.html',
-            controller: 'postCtrl'
-        })
+        templateUrl: 'views/posts.html',
+        controller: 'postCtrl'
+    })
 })
