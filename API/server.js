@@ -173,7 +173,7 @@ function tokencheck() {
         if (req.headers.authorization == token) {
             next();
         } else {
-            res.status(500).json({ message: 'Illetéktelen hozzáférés!' });
+            res.status(500).json({ message: 'User is not soo-table' });
         }
     };
 }
