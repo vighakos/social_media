@@ -47,35 +47,33 @@ app.controller('userCtrl', function($scope, DB, $rootScope, $location) {
             }
 
             DB.logincheck(data).then(function(res) {
-                console.log(res.data);
+                console.log(res.data)
                 if (res.data.length == 0) {
-                    alert('Hibás belépési adatok!');
-                } else {
-                    if (res.data[0].status == 0) {
-                        alert('Tiltott felhasználó!');
-                    } else {
-
-                        res.data[0].last = moment(new Date()).format('YYYY-MM-DD H:m:s');
-                        $rootScope.loggedUser = res.data[0];
-                        let data = {
-                            last: res.data[0].last
-                        }
-                        DB.update('users', res.data[0].ID, data).then(function(res) {
-                            sessionStorage.setItem('pizzeriaApp', angular.toJson($rootScope.loggedUser));
-                        });
-
-                        DB.select('carts', 'userID', $rootScope.loggedUser.ID).then(function(res) {
-                            $rootScope.itemsInCart = res.data.length;
-                        });
-                    }
+                    alert('Hibás belépési adatok!')
+                    return
                 }
-            });
+                if (res.data[0].status == 0) {
+                    alert('Tiltott felhasználó!')
+                    return
+                }
+                
+                res.data[0].last = moment(new Date()).format('YYYY-MM-DD H:m:s')
+                $rootScope.loggedUser = res.data[0]
+                
+                let data = {
+                    last: res.data[0].last
+                }
+
+                DB.update('users', res.data[0].ID, data).then(function(res) {
+                    sessionStorage.setItem('socialmediaApp', angular.toJson($rootScope.loggedUser));
+                });
+            })
         }
     }
 
     $scope.logout = function() {
         $rootScope.loggedUser = null;
-        sessionStorage.removeItem('pizzeriaApp');
+        sessionStorage.removeItem('socialmediaApp');
         $location.path('/');
     }
 });

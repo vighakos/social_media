@@ -22,7 +22,7 @@ server.use(express.urlencoded({ extended: true }));
 server.use(express.json());
 
 // LOGINCHECK
-server.post('/login', tokencheck(), (req, res) => {
+server.post('/login', (req, res) => {
     var table = req.body.table;
     var email = req.body.email;
     var passwd = req.body.passwd;
@@ -39,7 +39,7 @@ server.post('/login', tokencheck(), (req, res) => {
 })
 
 // GET ALL RECORDS
-server.get('/:table', tokencheck(), (req, res) => {
+server.get('/:table', (req, res) => {
     let table = req.params.table
 
     pool.query(`SELECT * FROM ${table}`, (err, results) => {
@@ -54,7 +54,7 @@ server.get('/:table', tokencheck(), (req, res) => {
 })
 
 // GET ONE RECORD BY ID
-server.get('/:table/:id', tokencheck(), (req, res) => {
+server.get('/:table/:id', (req, res) => {
     let table = req.params.table,
         id = req.params.id
 
@@ -70,7 +70,7 @@ server.get('/:table/:id', tokencheck(), (req, res) => {
 })
 
 // GET RECORDS BY FIELD
-server.get('/:table/:field/:value', tokencheck(), (req, res) => {
+server.get('/:table/:field/:value', (req, res) => {
     var table = req.params.table
     var field = req.params.field
     var value = req.params.value
@@ -86,7 +86,7 @@ server.get('/:table/:field/:value', tokencheck(), (req, res) => {
 })
 
 // INSERT RECORD
-server.post('/:table', tokencheck(), (req, res) => {
+server.post('/:table', (req, res) => {
     var table = req.params.table;
     var records = req.body;
     var str = 'null';
@@ -109,7 +109,7 @@ server.post('/:table', tokencheck(), (req, res) => {
 })
 
 // UPDATE RECORD
-server.patch('/:table/:id', tokencheck(), (req, res) => {
+server.patch('/:table/:id', (req, res) => {
     var table = req.params.table;
     var id = req.params.id;
     var records = req.body;
@@ -134,7 +134,7 @@ server.patch('/:table/:id', tokencheck(), (req, res) => {
 })
 
 // DELETE ONE RECORD
-server.delete('/:table/:id', tokencheck(), (req, res) => {
+server.delete('/:table/:id', (req, res) => {
     var table = req.params.table;
     var id = req.params.id;
 
@@ -149,7 +149,7 @@ server.delete('/:table/:id', tokencheck(), (req, res) => {
 })
 
 // DELETE ALL RECORDS WITH VALUE
-server.delete('/:table/:field/:value', tokencheck(), (req, res) => {
+server.delete('/:table/:field/:value', (req, res) => {
     var table = req.params.table;
     var field = req.params.field;
     var value = req.params.value;
