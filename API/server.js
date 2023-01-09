@@ -6,7 +6,8 @@ const express = require('express'),
     multer = require('multer'),
     sha1 = require('sha1'),
     port = process.env.PORT,
-    token = process.env.TOKEN;
+    token = process.env.TOKEN,
+    app = express();
 
 var mysql = require('mysql'),
     pool = mysql.createPool({
@@ -17,9 +18,14 @@ var mysql = require('mysql'),
         database: process.env.DBNAME
     });
 
+/*
 server.use(cors());
-server.use(express.urlencoded({ extended: true }));
+server.use(express.urlencoded({extended: true}));
 server.use(express.json());
+*/
+app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // LOGINCHECK
 server.post('/login', (req, res) => {
@@ -27,13 +33,17 @@ server.post('/login', (req, res) => {
     var email = req.body.email;
     var passwd = req.body.passwd;
 
-    pool.query(`SELECT * FROM ${table} WHERE email=? AND password=?`, [email, sha1(passwd)], (err, results) => {
+    pool.query(`SELECT * FROM ${table} WHERE email=? AND password=?`, [
+        email, sha1(passwd)
+    ], (err, results) => {
         if (err) {
             log(req.socket.remoteAddress, err);
             res.status(500).send(err);
         }
 
-        log(req.socket.remoteAddress, `${results.length} records sent form ${table} table (logincheck).`);
+        log(req.socket.remoteAddress, `${
+            results.length
+        } records sent form ${table} table (logincheck).`);
         res.status(200).send(results);
     })
 })
@@ -47,8 +57,10 @@ server.get('/:table', (req, res) => {
             log('ERROR', err)
             res.status(500).send(err)
         }
-        
-        log('SUCCESS', `${results.length} records sent from ${table}`)
+
+        log('SUCCESS', `${
+            results.length
+        } records sent from ${table}`)
         res.status(200).send(results)
     })
 })
@@ -64,7 +76,9 @@ server.get('/:table/:id', (req, res) => {
             res.status(500).send(err)
         }
 
-        log('SUCCESS', `${results.length} records sent from ${table}`)
+        log('SUCCESS', `${
+            results.length
+        } records sent from ${table}`)
         res.status(200).send(results)
     })
 })
@@ -79,8 +93,10 @@ server.get('/:table/:field/:value', (req, res) => {
             log(req.socket.remoteAddress, err)
             res.status(500).send(err)
         }
-        
-        log(req.socket.remoteAddress, `${results.length} records sent form ${table} table.`);
+
+        log(req.socket.remoteAddress, `${
+            results.length
+        } records sent form ${table} table.`);
         res.status(200).send(results);
     })
 })
@@ -95,15 +111,21 @@ server.post('/:table', (req, res) => {
     var fields = Object.keys(records);
     var values = Object.values(records);
 
-    values.forEach(value => { str += `, '${value}'` })
-    fields.forEach(field => { str2 += `, ${field}` }) 
+    values.forEach(value => {
+        str += `, '${value}'`
+    })
+    fields.forEach(field => {
+        str2 += `, ${field}`
+    })
 
     pool.query(`INSERT INTO ${table} (${str2}) VALUES(${str})`, (err, results) => {
         if (err) {
             log(req.socket.remoteAddress, err);
             res.status(500).send(err);
         }
-        log(req.socket.remoteAddress, `${results.affectedRows} record inserted to ${table} table.`);
+        log(req.socket.remoteAddress, `${
+            results.affectedRows
+        } record inserted to ${table} table.`);
         res.status(200).send(results);
     })
 })
@@ -119,8 +141,16 @@ server.patch('/:table/:id', (req, res) => {
     var values = Object.values(records);
 
     for (let i = 0; i < fields.length; i++) {
-        str += `${fields[i]}='${values[i]}'`
-        if (i != fields.length - 1) str += ","
+        str += `${
+            fields[i]
+        }='${
+            values[i]
+        }'`
+        if (i != fields.length - 1) 
+            str += ","
+
+        
+
     }
 
     pool.query(`UPDATE ${table} SET ${str} WHERE ID=${id}`, (err, results) => {
@@ -128,7 +158,9 @@ server.patch('/:table/:id', (req, res) => {
             log(req.socket.remoteAddress, err);
             res.status(500).send(err);
         }
-        log(req.socket.remoteAddress, `${results.affectedRows} record updated in ${table} table.`);
+        log(req.socket.remoteAddress, `${
+            results.affectedRows
+        } record updated in ${table} table.`);
         res.status(200).send(results);
     })
 })
@@ -143,7 +175,9 @@ server.delete('/:table/:id', (req, res) => {
             log(req.socket.remoteAddress, err);
             res.status(500).send(err);
         }
-        log(req.socket.remoteAddress, `${results.affectedRows} record deleted form ${table} table.`);
+        log(req.socket.remoteAddress, `${
+            results.affectedRows
+        } record deleted form ${table} table.`);
         res.status(200).send(results);
     })
 })
@@ -159,7 +193,9 @@ server.delete('/:table/:field/:value', (req, res) => {
             log(req.socket.remoteAddress, err);
             res.status(500).send(err);
         }
-        log(req.socket.remoteAddress, `${results.affectedRows} records deleted form ${table} table.`);
+        log(req.socket.remoteAddress, `${
+            results.affectedRows
+        } records deleted form ${table} table.`);
         res.status(200).send(results);
     })
 })
@@ -169,11 +205,11 @@ server.listen(port, () => {
 })
 
 function tokencheck() {
-    return (req, res, next) => {
+    return(req, res, next) => {
         if (req.headers.authorization == token) {
             next();
         } else {
-            res.status(500).json({ message: 'User is not soo-table' });
+            res.status(500).json({message: 'User is not soo-table'});
         }
     };
 }

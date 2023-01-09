@@ -11,7 +11,13 @@ app.run(function($rootScope, $locale, DB) {
     $rootScope.decimals = 0;
 
     $rootScope.loggedUser = angular.fromJson(sessionStorage.getItem('socmedApp'));
-})
+    if ($rootScope.loggedUser) {
+
+        DB.select('users', 'userID', $rootScope.loggedUser.ID).then(function(res) {
+            $rootScope.onlineUsers = res.data.length;
+        });
+    }
+});
 
 app.config(function($routeProvider) {
     $routeProvider
