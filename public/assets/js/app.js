@@ -1,4 +1,4 @@
-let app = new angular.module('socmedApp', ['ngRoute'])
+var app = new angular.module('socmedApp', ['ngRoute'])
 
 app.run(function($rootScope, $locale, DB) {
     $rootScope.settings = {};
@@ -22,7 +22,7 @@ app.run(function($rootScope, $locale, DB) {
 app.config(function($routeProvider) {
     $routeProvider
     
-    .when('/', {
+    .when('/posts', {
         templateUrl: 'views/posts.html',
         controller: 'postCtrl'
     })
