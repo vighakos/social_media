@@ -4,7 +4,7 @@ app.run(function($rootScope, $locale, DB) {
     $rootScope.settings = {};
     $rootScope.settings.appTitle = 'Social Media App';
     $rootScope.settings.company = 'Bajai SZC Türr István Technikum';
-    $rootScope.settings.author = 'Vigh Ákos, Kerekes István, Baranyi Dániel';
+    $rootScope.settings.author = 'RFG-HJK csapat';
     $rootScope.loggedUser = {};
 
     $rootScope.penznem = 'Ft';
@@ -26,8 +26,8 @@ app.config(function($routeProvider) {
         templateUrl: 'views/posts.html',
         controller: 'postCtrl'
     })
-    .when('/reg', {
-        templateUrl: 'views/reg.html',
+    .when('/profile', {
+        templateUrl: 'views/profilePage.html',
         controller: 'userCtrl'
     })
 })
